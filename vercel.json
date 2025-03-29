@@ -1,0 +1,7 @@
+{
+    "version": 2,
+    "routes": [
+      { "src": "/activity.svg", "dest": "/api/activity.js" }
+    ]
+  }
+  
