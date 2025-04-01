@@ -11,13 +11,13 @@ app.get("/test/activity.svg", async (req, res) => {
   const data = await fetchData(username);
 
   if (!data) {
-    res.send("<p id='not-found'>No data was found for this user.</p>");
+    res.setHeader("Content-Type", "text/plain");
+    res.send("No data was found for this user.");
     return;
   }
 
-  res.send(`
-${data}
-  `);
+  res.setHeader("Content-Type", "image/svg+xml");
+  res.send(data);
 });
 
 app.listen(port, () => {
