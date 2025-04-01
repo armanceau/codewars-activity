@@ -6,7 +6,7 @@ const port = 3000;
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/test", async (req, res) => {
+app.get("/test/activity.svg", async (req, res) => {
   const username = "armanceau";
   const data = await fetchData(username);
 
@@ -16,13 +16,7 @@ app.get("/test", async (req, res) => {
   }
 
   res.send(`
-    <html>
-      <head><title>Codewars Activity</title></head>
-      <body>
-        <h1>Activity for ${username}</h1>
-        <div id="activity">${data}</div>
-      </body>
-    </html>
+${data}
   `);
 });
 
@@ -44,7 +38,6 @@ async function fetchData(username) {
   }
 
   const activityData = processActivityData(response.data);
-  console.log(activityData);
   return generateSVG(activityData);
 }
 
@@ -85,7 +78,6 @@ function generateSVG(activityData) {
 
   allDates.forEach((date, index) => {
     const count = activityData[date] || 0;
-    console.log(count);
     if (count <= 0) {
       fillColor = "white";
     } else {
@@ -119,7 +111,5 @@ function getAllDatesForYear(year) {
     dates.push(formattedDate);
     date.setDate(date.getDate() + 1);
   }
-  console.log(dates);
-
   return dates;
 }
