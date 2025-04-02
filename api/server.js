@@ -79,7 +79,7 @@ function generateSVG(activityData) {
   allDates.forEach((date, index) => {
     const count = activityData[date] || 0;
     if (count <= 0) {
-      fillColor = "white";
+      fillColor = "lightgray";
     } else {
       const level =
         dayLevels.find((level) => count <= level.threshold) ||
