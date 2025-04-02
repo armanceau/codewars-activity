@@ -87,7 +87,7 @@ function generateSVG(activityData) {
       fillColor = level.color;
     }
 
-    svgContent += `<rect x="${xOffset}" y="${yOffset}" width="${dayWidth}" height="${dayHeight}" fill="${fillColor}" stroke="#ffffff0d" rx="3" ry="3" />`;
+    svgContent += `<rect x="${xOffset}" y="${yOffset}" width="${dayWidth}" height="${dayHeight}" fill="${fillColor}" stroke="#ffffff3a" rx="3" ry="3" />`;
 
     xOffset += dayWidth + xSpacing;
 
