@@ -60,7 +60,7 @@ function generateSVG(activityData) {
   const dayHeight = 12;
   const xSpacing = 2.5;
   let svgContent =
-    '<svg width="770" height="110" xmlns="http://www.w3.org/2000/svg">';
+    '<svg width="770" height="110" xmlns="http://www.w3.org/2000/svg" style="background-color: #101414;">';
 
   let xOffset = 0;
   let yOffset = 10;
@@ -79,7 +79,7 @@ function generateSVG(activityData) {
   allDates.forEach((date, index) => {
     const count = activityData[date] || 0;
     if (count <= 0) {
-      fillColor = "#f5f5f5";
+      fillColor = "#101414";
     } else {
       const level =
         dayLevels.find((level) => count <= level.threshold) ||
@@ -87,7 +87,7 @@ function generateSVG(activityData) {
       fillColor = level.color;
     }
 
-    svgContent += `<rect x="${xOffset}" y="${yOffset}" width="${dayWidth}" height="${dayHeight}" fill="${fillColor}" stroke="black" rx="3" ry="3" />`;
+    svgContent += `<rect x="${xOffset}" y="${yOffset}" width="${dayWidth}" height="${dayHeight}" fill="${fillColor}" stroke="#ffffff0d" rx="3" ry="3" />`;
 
     xOffset += dayWidth + xSpacing;
 
