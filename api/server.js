@@ -111,7 +111,7 @@ function generateSVG(activityData) {
 
   svgContent += `<text x="5" y="${
     legendOffset + dayHeight / 1.2
-  }" fill="#ffffff" font-size="12" text-anchor="start">Faible</text>`;
+  }" fill="#ffffff" stroke="black" stroke-width="1" font-size="12" text-anchor="start">Faible</text>`;
   svgContent += `<rect x="40" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="#151b23" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
   svgContent += `<rect x="55" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[1].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
   svgContent += `<rect x="70" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[2].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
@@ -121,7 +121,7 @@ function generateSVG(activityData) {
   svgContent += `<rect x="130" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[6].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
   svgContent += `<text x="150" y="${
     legendOffset + dayHeight / 1.2
-  }" fill="#ffffff" font-size="12" text-anchor="start">Élevé</text></svg>`;
+  }" fill="#ffffff" stroke="black" stroke-width="1" font-size="12" text-anchor="start">Élevé</text></svg>`;
   return svgContent;
 }
 
