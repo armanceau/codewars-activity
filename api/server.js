@@ -60,7 +60,7 @@ function generateSVG(activityData) {
   const dayHeight = 12;
   const xSpacing = 2.5;
   let svgContent =
-    '<svg width="770" height="140" xmlns="http://www.w3.org/2000/svg" style="background-color: #101414;">';
+    '<svg width="770" height="140" xmlns="http://www.w3.org/2000/svg" style="background-color: transparent;">';
 
   let xOffset = 0;
   let yOffset = 10;
