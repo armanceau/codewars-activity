@@ -87,7 +87,17 @@ function generateSVG(activityData) {
       fillColor = level.color;
     }
 
-    svgContent += `<rect x="${xOffset}" y="${yOffset}" width="${dayWidth}" height="${dayHeight}" fill="${fillColor}" stroke="#ffffff3a" rx="3" ry="3" />`;
+    const formatter = new Intl.DateTimeFormat("fr-FR", {
+      day: "numeric",
+      month: "long",
+    });
+    const dateStr = new Date(date);
+    const formattedDate = formatter.format(dateStr);
+
+    svgContent += `<rect x="${xOffset}" y="${yOffset}" width="${dayWidth}" height="${dayHeight}" fill="${fillColor}" stroke="#ffffff3a" rx="3" ry="3">
+    <title>${count} kata${count > 1 ? "s" : ""} réalisé${
+      count > 1 ? "s" : ""
+    } le ${formattedDate}</title></rect>`;
 
     xOffset += dayWidth + xSpacing;
 
