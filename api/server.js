@@ -21,7 +21,7 @@ app.get("/test/activity.svg", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.info(`Server running at http://localhost:${port} 🐵`);
 });
 
 async function fetchData(username) {
@@ -60,7 +60,7 @@ function generateSVG(activityData) {
   const dayHeight = 12;
   const xSpacing = 2.5;
   let svgContent =
-    '<svg width="770" height="110" xmlns="http://www.w3.org/2000/svg" style="background-color: #101414;">';
+    '<svg width="770" height="140" xmlns="http://www.w3.org/2000/svg" style="background-color: #101414;">';
 
   let xOffset = 0;
   let yOffset = 10;
@@ -107,7 +107,21 @@ function generateSVG(activityData) {
     }
   });
 
-  svgContent += "</svg>";
+  const legendOffset = yOffset + 30;
+
+  svgContent += `<text x="5" y="${
+    legendOffset + dayHeight / 1.2
+  }" fill="#ffffff" font-size="12" text-anchor="start">Faible</text>`;
+  svgContent += `<rect x="40" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="#151b23" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
+  svgContent += `<rect x="55" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[1].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
+  svgContent += `<rect x="70" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[2].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
+  svgContent += `<rect x="85" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[3].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
+  svgContent += `<rect x="100" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[4].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
+  svgContent += `<rect x="115" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[5].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
+  svgContent += `<rect x="130" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[6].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
+  svgContent += `<text x="150" y="${
+    legendOffset + dayHeight / 1.2
+  }" fill="#ffffff" font-size="12" text-anchor="start">Élevé</text></svg>`;
   return svgContent;
 }
 
