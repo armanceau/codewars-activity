@@ -6,7 +6,7 @@ const port = 3000;
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/test/activity.svg", async (req, res) => {
+app.get("/activity.svg", async (req, res) => {
   const username = "armanceau";
   const data = await fetchData(username);
 
@@ -67,7 +67,7 @@ function generateSVG(activityData) {
   const allDates = getAllDatesForYear(currentYear);
 
   const dayLevels = [
-    { threshold: 0, color: "#fff" },
+    { threshold: 0, color: "#151b23" },
     { threshold: 1, color: "#ba9b95" },
     { threshold: 2, color: "#ba8277" },
     { threshold: 3, color: "#ba6959" },
