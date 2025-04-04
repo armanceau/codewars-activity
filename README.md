@@ -10,7 +10,7 @@ _Cette application Express génère un fichier SVG représentant l'activité quo
 
 ## Endpoints
 
-- `GET /test/activity.svg`: Récupère un SVG de l'activité de l'utilisateur CodeWars spécifié.
+- `GET /activity.svg`: Récupère un SVG de l'activité de l'utilisateur CodeWars spécifié.
 
 ## Installation
 
