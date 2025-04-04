@@ -31,4 +31,4 @@ _Cette application Express génère un fichier SVG représentant l'activité quo
 
 ## Présentation
 
-![](https://codewars-activity.vercel.app/test/activity.svg)
+![](https://codewars-activity.vercel.app/activity.svg)
