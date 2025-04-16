@@ -1,3 +1,8 @@
 {
-  "rewrites": [{ "source": "/activity.svg", "destination": "/api/server" }]
+  "rewrites": [
+    {
+      "source": "/:username/:langue/activity.svg",
+      "destination": "/api/server"
+    }
+  ]
 }
