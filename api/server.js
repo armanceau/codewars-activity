@@ -6,9 +6,10 @@ const port = 3000;
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/activity.svg", async (req, res) => {
-  const username = "armanceau";
-  const data = await fetchData(username);
+app.get("/:username/:langue/activity.svg", async (req, res) => {
+  const username = req.params.username;
+  const langue = req.params.langue;
+  const data = await fetchData(username, langue);
 
   if (!data) {
     res.setHeader("Content-Type", "text/plain");
@@ -24,7 +25,7 @@ app.listen(port, () => {
   console.info(`Server running at http://localhost:${port} 🐵`);
 });
 
-async function fetchData(username) {
+async function fetchData(username, langue) {
   const url = `https://www.codewars.com/api/v1/users/${username}/code-challenges/completed`;
   let response;
 
@@ -38,7 +39,7 @@ async function fetchData(username) {
   }
 
   const activityData = processActivityData(response.data);
-  return generateSVG(activityData);
+  return generateSVG(activityData, langue);
 }
 
 function processActivityData(data) {
@@ -54,7 +55,36 @@ function processActivityData(data) {
   return activityDays;
 }
 
-function generateSVG(activityData) {
+function generateSVG(activityData, langue = "fr") {
+  const translations = {
+    fr: {
+      tooltip: (count, date) =>
+        `${count} kata${count > 1 ? "s" : ""} réalisé${
+          count > 1 ? "s" : ""
+        } le ${date}`,
+      low: "Faible",
+      high: "Élevé",
+      locale: "fr-FR",
+    },
+    en: {
+      tooltip: (count, date) =>
+        `${count} kata${count > 1 ? "s" : ""} completed on ${date}`,
+      low: "Low",
+      high: "High",
+      locale: "en-US",
+    },
+    es: {
+      tooltip: (count, date) =>
+        `${count} kata${count > 1 ? "s" : ""} completado${
+          count > 1 ? "s" : ""
+        } el ${date}`,
+      low: "Bajo",
+      high: "Alto",
+      locale: "es-ES",
+    },
+  };
+
+  const t = translations[langue] || translations["fr"];
   const currentYear = new Date().getFullYear();
   const dayWidth = 12;
   const dayHeight = 12;
@@ -78,26 +108,20 @@ function generateSVG(activityData) {
 
   allDates.forEach((date, index) => {
     const count = activityData[date] || 0;
-    if (count <= 0) {
-      fillColor = "#151b23";
-    } else {
-      const level =
-        dayLevels.find((level) => count <= level.threshold) ||
-        dayLevels[dayLevels.length - 1];
-      fillColor = level.color;
-    }
 
-    const formatter = new Intl.DateTimeFormat("fr-FR", {
+    const level =
+      dayLevels.find((level) => count <= level.threshold) ||
+      dayLevels[dayLevels.length - 1];
+    const fillColor = level.color;
+
+    const formatter = new Intl.DateTimeFormat(t.locale, {
       day: "numeric",
       month: "long",
     });
-    const dateStr = new Date(date);
-    const formattedDate = formatter.format(dateStr);
+    const formattedDate = formatter.format(new Date(date));
 
     svgContent += `<rect x="${xOffset}" y="${yOffset}" width="${dayWidth}" height="${dayHeight}" fill="${fillColor}" stroke="#ffffff3a" rx="3" ry="3">
-    <title>${count} kata${count > 1 ? "s" : ""} réalisé${
-      count > 1 ? "s" : ""
-    } le ${formattedDate}</title></rect>`;
+    <title>${t.tooltip(count, formattedDate)}</title></rect>`;
 
     xOffset += dayWidth + xSpacing;
 
@@ -111,17 +135,22 @@ function generateSVG(activityData) {
 
   svgContent += `<text x="5" y="${
     legendOffset + dayHeight / 1.1
-  }" fill="#ba9b95" font-family="Inter, sans-serif" font-size="14" text-anchor="start">Faible</text>`;
-  svgContent += `<rect x="50" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="#151b23" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
-  svgContent += `<rect x="65" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[1].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
-  svgContent += `<rect x="80" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[2].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
-  svgContent += `<rect x="95" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[3].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
-  svgContent += `<rect x="110" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[4].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
-  svgContent += `<rect x="125" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[5].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
-  svgContent += `<rect x="140" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${dayLevels[6].color}" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
+  }" fill="#ba9b95" font-family="Inter, sans-serif" font-size="14" text-anchor="start">${
+    t.low
+  }</text>`;
+  for (let i = 0; i < dayLevels.length; i++) {
+    svgContent += `<rect x="${
+      50 + 15 * i
+    }" y="${legendOffset}" width="${dayWidth}" height="${dayHeight}" fill="${
+      dayLevels[i].color
+    }" stroke="#ffffff3a" rx="3" ry="3"></rect>`;
+  }
   svgContent += `<text x="160" y="${
     legendOffset + dayHeight / 1.1
-  }" fill="#ba1f00" font-family="Inter, sans-serif" font-size="14" text-anchor="start">Élevé</text></svg>`;
+  }" fill="#ba1f00" font-family="Inter, sans-serif" font-size="14" text-anchor="start">${
+    t.high
+  }</text></svg>`;
+
   return svgContent;
 }
 
