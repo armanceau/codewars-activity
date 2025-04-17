@@ -3,9 +3,84 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Codewars Activity – Generate Your SVG Summary</title>
+    <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    Hello world!
+    <h1>📊 Your Codewars Activity in SVG</h1>
+    <p>
+      Generate a visual summary of your Codewars activity, similar to the GitHub
+      contribution graph. Perfect for portfolios, GitHub READMEs, or simply
+      tracking your progress!
+    </p>
+
+    <section class="form-section">
+      <h2>✨ Generate My Summary</h2>
+      <label for="username">Your Codewars Username:</label>
+      <input type="text" id="username" placeholder="e.g., armanceau" />
+
+      <label for="lang">Display Language:</label>
+      <select id="lang">
+        <option value="en">🇬🇧 English</option>
+        <option value="fr">🇫🇷 French</option>
+        <option value="es">🇪🇸 Spanish</option>
+      </select>
+
+      <button onclick="generateSVG()">Generate My Graph 🚀</button>
+      <p id="warningMessage">
+        ⚠️ If the SVG doesn’t appear, make sure your Codewars username is
+        spelled correctly. The user might not exist or there may be a typo.
+      </p>
+      <div id="loader"></div>
+    </section>
+
+    <div id="result" style="display: none">
+      <h2>✅ Result</h2>
+      <iframe id="svgFrame"></iframe>
+      <p>
+        🔗 Direct link to your SVG:
+        <a id="svgLink" href="#" target="_blank">View Image</a>
+      </p>
+      <p>📦 To embed in your GitHub README:</p>
+      <pre><code id="markdownCode"></code></pre>
+    </div>
+
+    <div class="social-links">
+      <p>Feel free to connect with me 🐵:</p>
+      <a href="https://github.com/armanceau" target="_blank">GitHub</a> |
+      <a href="https://www.linkedin.com/in/arthur-manceau" target="_blank"
+        >LinkedIn</a
+      >
+    </div>
+
+    <script>
+      function generateSVG() {
+        const username = document.getElementById("username").value.trim();
+        const lang = document.getElementById("lang").value;
+        const iframe = document.getElementById("svgFrame");
+        const loader = document.getElementById("loader");
+
+        if (!username) {
+          alert("Please enter your Codewars username!");
+          return;
+        }
+
+        const svgUrl = `https://codewars-activity.vercel.app/${username}/${lang}/activity.svg`;
+
+        loader.style.display = "block";
+
+        iframe.src = svgUrl;
+        document.getElementById("svgLink").href = svgUrl;
+        document.getElementById(
+          "markdownCode"
+        ).textContent = `![Codewars Activity](${svgUrl})`;
+        document.getElementById("result").style.display = "block";
+        document.getElementById("warningMessage").style.display = "block";
+
+        iframe.onload = function () {
+          loader.style.display = "none";
+        };
+      }
+    </script>
   </body>
 </html>
