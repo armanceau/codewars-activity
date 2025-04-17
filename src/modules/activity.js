@@ -1,58 +1,39 @@
-const express = require("express");
 const axios = require("axios");
-const path = require("path");
-const app = express();
-const port = 3000;
 
-app.use(express.static(path.join(__dirname, "public")));
+function getAllDatesForYear(year) {
+  const dates = [];
+  const date = new Date(year, 0, 1);
+  const lastDate = new Date(year + 1, 0, 1);
 
-app.get("/:username/:langue/activity.svg", async (req, res) => {
-  const username = req.params.username;
-  const langue = req.params.langue;
-  const data = await fetchData(username, langue);
-
-  if (!data) {
-    res.setHeader("Content-Type", "text/plain");
-    res.send("No data was found for this user.");
-    return;
+  while (date < lastDate) {
+    dates.push(date.toISOString().slice(0, 10));
+    date.setDate(date.getDate() + 1);
   }
-
-  res.setHeader("Content-Type", "image/svg+xml");
-  res.send(data);
-});
-
-app.listen(port, () => {
-  console.info(`Server running at http://localhost:${port} 🐵`);
-});
-
-async function fetchData(username, langue) {
-  const url = `https://www.codewars.com/api/v1/users/${username}/code-challenges/completed`;
-  let response;
-
-  try {
-    response = await axios.get(url, {
-      params: { page: 0 },
-    });
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return null;
-  }
-
-  const activityData = processActivityData(response.data);
-  return generateSVG(activityData, langue);
+  return dates;
 }
 
 function processActivityData(data) {
   const activityDays = {};
   data.data.forEach((item) => {
     const date = item.completedAt.slice(0, 10);
-    if (!activityDays[date]) {
-      activityDays[date] = 1;
-    } else {
-      activityDays[date]++;
-    }
+    activityDays[date] = (activityDays[date] || 0) + 1;
   });
   return activityDays;
+}
+
+async function fetchData(username) {
+  try {
+    const response = await axios.get(
+      `https://www.codewars.com/api/v1/users/${username}/code-challenges/completed`,
+      {
+        params: { page: 0 },
+      }
+    );
+    return response.data;
+  } catch (err) {
+    console.error("Erreur API:", err);
+    return null;
+  }
 }
 
 function generateSVG(activityData, langue = "fr") {
@@ -121,7 +102,7 @@ function generateSVG(activityData, langue = "fr") {
     const formattedDate = formatter.format(new Date(date));
 
     svgContent += `<rect x="${xOffset}" y="${yOffset}" width="${dayWidth}" height="${dayHeight}" fill="${fillColor}" stroke="#ffffff3a" rx="3" ry="3">
-    <title>${t.tooltip(count, formattedDate)}</title></rect>`;
+      <title>${t.tooltip(count, formattedDate)}</title></rect>`;
 
     xOffset += dayWidth + xSpacing;
 
@@ -154,15 +135,14 @@ function generateSVG(activityData, langue = "fr") {
   return svgContent;
 }
 
-function getAllDatesForYear(year) {
-  const dates = [];
-  const date = new Date(year, 0, 1);
-  const lastDate = new Date(year + 1, 0, 1);
+async function generateActivitySVG(username, langue) {
+  const data = await fetchData(username);
+  if (!data) return null;
 
-  while (date < lastDate) {
-    const formattedDate = date.toISOString().slice(0, 10);
-    dates.push(formattedDate);
-    date.setDate(date.getDate() + 1);
-  }
-  return dates;
+  const processed = processActivityData(data);
+  return generateSVG(processed, langue);
 }
+
+module.exports = {
+  generateActivitySVG,
+};
