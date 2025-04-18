@@ -73,7 +73,7 @@ cd codewars-activity
 
  ```bash
  npm install
- cd api
+ cd src
  node server.js
 ```
 3. Your API is now running at `http://localhost:3000`.
