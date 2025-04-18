@@ -58,7 +58,6 @@
     </div>
 
     <script>
-      // -- Theme toggle logic --
       const toggle = document.getElementById("theme-toggle");
       const body = document.body;
       const saved = localStorage.getItem("theme") || "dark";
@@ -76,7 +75,6 @@
         toggle.textContent = theme === "dark" ? "☀️" : "🌙";
       }
 
-      // -- SVG generation logic --
       function generateSVG() {
         const username = document.getElementById("username").value.trim();
         const lang = document.getElementById("lang").value;
