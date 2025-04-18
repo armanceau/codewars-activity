@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <h1>📊 Your Codewars Activity in SVG</h1>
+    <header>
+      <h1>📊 Your Codewars Activity in SVG</h1>
+      <button id="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
+    </header>
+
     <p>
       Generate a visual summary of your Codewars activity, similar to the GitHub
       contribution graph. Perfect for portfolios, GitHub READMEs, or simply
@@ -54,6 +58,25 @@
     </div>
 
     <script>
+      // -- Theme toggle logic --
+      const toggle = document.getElementById("theme-toggle");
+      const body = document.body;
+      const saved = localStorage.getItem("theme") || "dark";
+      body.classList.add(saved);
+      updateToggleIcon(saved);
+
+      toggle.onclick = () => {
+        const next = body.classList.contains("dark") ? "light" : "dark";
+        body.classList.replace(body.classList.contains("dark") ? "dark" : "light", next);
+        localStorage.setItem("theme", next);
+        updateToggleIcon(next);
+      };
+
+      function updateToggleIcon(theme) {
+        toggle.textContent = theme === "dark" ? "☀️" : "🌙";
+      }
+
+      // -- SVG generation logic --
       function generateSVG() {
         const username = document.getElementById("username").value.trim();
         const lang = document.getElementById("lang").value;
