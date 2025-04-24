@@ -71,7 +71,7 @@ function generateSVG(activityData, langue = "fr") {
   const dayHeight = 12;
   const xSpacing = 2.5;
   let svgContent =
-    '<svg width="770" height="140" xmlns="http://www.w3.org/2000/svg" style="background-color: transparent;">';
+    '<svg width="770" height="160" xmlns="http://www.w3.org/2000/svg" style="background-color: transparent;">';
 
   let xOffset = 0;
   let yOffset = 10;
@@ -114,6 +114,8 @@ function generateSVG(activityData, langue = "fr") {
 
   const legendOffset = yOffset + 30;
 
+  const { currentStreak } = calculateStreaks(activityData);
+
   svgContent += `<text x="5" y="${
     legendOffset + dayHeight / 1.1
   }" fill="#ba9b95" font-family="Inter, sans-serif" font-size="14" text-anchor="start">${
@@ -130,9 +132,50 @@ function generateSVG(activityData, langue = "fr") {
     legendOffset + dayHeight / 1.1
   }" fill="#ba1f00" font-family="Inter, sans-serif" font-size="14" text-anchor="start">${
     t.high
-  }</text></svg>`;
+  }</text>
+  <g transform="translate(580, 115)">
+    <rect width="170" height="40" fill="#151b23" stroke="#ba9b95" rx="8" ry="8"/>
+    <text x="85" y="25" fill="#ba9b95" font-family="Inter, sans-serif" font-size="16" text-anchor="middle">
+      🔥 ${currentStreak} jour${currentStreak > 1 ? "s" : ""} de suite
+    </text>
+  </g></svg>`;
+
+
 
   return svgContent;
+}
+
+function calculateStreaks(activityDays) {
+  const dates = Object.keys(activityDays).sort(); // format YYYY-MM-DD
+  let maxStreak = 0;
+  let currentStreak = 0;
+  let lastDate = null;
+  const today = new Date().toISOString().slice(0, 10);
+
+  dates.forEach((dateStr) => {
+    const date = new Date(dateStr);
+    if (lastDate) {
+      const expected = new Date(lastDate);
+      expected.setDate(expected.getDate() + 1);
+      if (date.toISOString().slice(0, 10) === expected.toISOString().slice(0, 10)) {
+        currentStreak++;
+      } else {
+        currentStreak = 1;
+      }
+    } else {
+      currentStreak = 1;
+    }
+    if (currentStreak > maxStreak) maxStreak = currentStreak;
+    lastDate = date;
+  });
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().slice(0, 10);
+  if (!activityDays[yesterdayStr] && today !== dates[dates.length - 1]) {
+    currentStreak = 0;
+  }
+  return { currentStreak, maxStreak };
 }
 
 async function generateActivitySVG(username, langue) {
