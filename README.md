@@ -34,6 +34,25 @@ Or in Markdown:
 ![Codewars Activity](https://codewars-activity.vercel.app/armanceau/en/activity.svg)
 ```
 
+## 💬 Display the Badge
+
+Additionally, you can embed a dynamic badge in your repository or website to showcase your Codewars progress. This badge will update automatically based on your recent activity! By default, the badge will be displayed.
+
+If you'd like to hide the badge, you can append `?streak=false` to the URL. If you don't specify this parameter, the badge will be displayed by default.
+
+*Example of a Codewars activity badge:*
+
+To hide the badge, use this Markdown (badge displayed by default):
+
+
+```html
+<iframe src="https://codewars-activity.vercel.app/armanceau/en/activity.svg?streak=false" width="720" height="120" frameborder="0"></iframe>
+```
+Or in Markdown:
+```markdown
+![Codewars Activity Badge](https://codewars-activity.vercel.app/armanceau/en/activity.svg?streak=false)
+```
+
 ## 🚀 Usage
 
 To generate your own Codewars activity chart:
