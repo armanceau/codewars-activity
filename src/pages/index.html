@@ -23,6 +23,8 @@
       <label for="username">Your Codewars Username:</label>
       <input type="text" id="username" placeholder="e.g., armanceau" />
 
+      <hr>
+
       <label for="lang">Display Language:</label>
       <select id="lang">
         <option value="en">🇬🇧 English</option>
@@ -30,6 +32,17 @@
         <option value="es">🇪🇸 Spanish</option>
       </select>
 
+      <hr>
+
+      <label for="streakSelect">Choose Streak Status:</label>
+      <select id="streakSelect" name="streak">
+        <option value="">Default ⚪</option>
+        <option value="true">Enabled ✅</option>
+        <option value="false">Disabled ❌</option>
+      </select>
+
+
+    
       <button onclick="generateSVG()">Generate My Graph 🚀</button>
       <p id="warningMessage">
         ⚠️ If the SVG doesn’t appear, make sure your Codewars username is
@@ -37,7 +50,7 @@
       </p>
       <div id="loader"></div>
     </section>
-
+    
     <div id="result" style="display: none">
       <h2>✅ Result</h2>
       <iframe id="svgFrame"></iframe>
@@ -47,6 +60,12 @@
       </p>
       <p>📦 To embed in your GitHub README:</p>
       <pre><code id="markdownCode"></code></pre>
+    
+      <p>
+        💡 Want to hide the <strong>🔥 streak badge</strong>?<br />
+        Just add <code>?streak=false</code> at the end of the URL like this:<br />
+        <pre><code>https://codewars-activity.vercel.app/yourUsername/en/activity.svg?streak=false</code></pre>
+      </p>
     </div>
 
     <div class="social-links">
@@ -80,13 +99,23 @@
         const lang = document.getElementById("lang").value;
         const iframe = document.getElementById("svgFrame");
         const loader = document.getElementById("loader");
+        const streakSelect = document.getElementById("streakSelect");
 
         if (!username) {
           alert("Please enter your Codewars username!");
           return;
         }
 
-        const svgUrl = `https://codewars-activity.vercel.app/${username}/${lang}/activity.svg`;
+        const streakParamMapping = {
+          "true": "?streak=true",
+          "false": "?streak=false",
+          "": ""
+        };
+
+        streakParam = streakParamMapping[streakSelect.value] || '';
+
+        const baseUrl  = `https://codewars-activity.vercel.app/${username}/${lang}/activity.svg`;
+        const svgUrl = baseUrl + streakParam;
 
         loader.style.display = "block";
 

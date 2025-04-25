@@ -36,13 +36,15 @@ async function fetchData(username) {
   }
 }
 
-function generateSVG(activityData, langue = "fr") {
+function generateSVG(activityData, langue = "fr", showStreak = true) {
   const translations = {
     fr: {
       tooltip: (count, date) =>
         `${count} kata${count > 1 ? "s" : ""} réalisé${
           count > 1 ? "s" : ""
         } le ${date}`,
+      streak: (count) =>
+        `${count} jour${count > 1 ? "s" : ""} de suite`,
       low: "Faible",
       high: "Élevé",
       locale: "fr-FR",
@@ -50,6 +52,8 @@ function generateSVG(activityData, langue = "fr") {
     en: {
       tooltip: (count, date) =>
         `${count} kata${count > 1 ? "s" : ""} completed on ${date}`,
+      streak: (count) =>
+        `${count} day${count > 1 ? "s" : ""} in a row`,
       low: "Low",
       high: "High",
       locale: "en-US",
@@ -59,6 +63,8 @@ function generateSVG(activityData, langue = "fr") {
         `${count} kata${count > 1 ? "s" : ""} completado${
           count > 1 ? "s" : ""
         } el ${date}`,
+      streak: (count) =>
+        `${count} día${count > 1 ? "s" : ""} seguido${count > 1 ? "s" : ""}`,
       low: "Bajo",
       high: "Alto",
       locale: "es-ES",
@@ -71,7 +77,7 @@ function generateSVG(activityData, langue = "fr") {
   const dayHeight = 12;
   const xSpacing = 2.5;
   let svgContent =
-    '<svg width="770" height="140" xmlns="http://www.w3.org/2000/svg" style="background-color: transparent;">';
+    '<svg width="770" height="160" xmlns="http://www.w3.org/2000/svg" style="background-color: transparent;">';
 
   let xOffset = 0;
   let yOffset = 10;
@@ -114,6 +120,8 @@ function generateSVG(activityData, langue = "fr") {
 
   const legendOffset = yOffset + 30;
 
+  const { currentStreak } = calculateStreaks(activityData);
+
   svgContent += `<text x="5" y="${
     legendOffset + dayHeight / 1.1
   }" fill="#ba9b95" font-family="Inter, sans-serif" font-size="14" text-anchor="start">${
@@ -130,17 +138,62 @@ function generateSVG(activityData, langue = "fr") {
     legendOffset + dayHeight / 1.1
   }" fill="#ba1f00" font-family="Inter, sans-serif" font-size="14" text-anchor="start">${
     t.high
-  }</text></svg>`;
+  }</text>`;
+
+  if (showStreak) {
+    svgContent +=`
+    <g transform="translate(720, 115)" style="cursor: default;">
+        <rect width="45" height="30" fill="#151b23" stroke="#ba9b95" rx="8" ry="8"/>
+        <text x="20" y="20" fill="#ba9b95" font-family="Inter, sans-serif" font-size="14" text-anchor="middle">
+          🔥${currentStreak}
+          <title>${t.streak(currentStreak)}</title>
+        </text>
+      </g>`;
+  }
+    svgContent +=`</svg>`;
 
   return svgContent;
 }
 
-async function generateActivitySVG(username, langue) {
+function calculateStreaks(activityDays) {
+  const dates = Object.keys(activityDays).sort();
+  let maxStreak = 0;
+  let currentStreak = 0;
+  let lastDate = null;
+  const today = new Date().toISOString().slice(0, 10);
+
+  dates.forEach((dateStr) => {
+    const date = new Date(dateStr);
+    if (lastDate) {
+      const expected = new Date(lastDate);
+      expected.setDate(expected.getDate() + 1);
+      if (date.toISOString().slice(0, 10) === expected.toISOString().slice(0, 10)) {
+        currentStreak++;
+      } else {
+        currentStreak = 1;
+      }
+    } else {
+      currentStreak = 1;
+    }
+    if (currentStreak > maxStreak) maxStreak = currentStreak;
+    lastDate = date;
+  });
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().slice(0, 10);
+  if (!activityDays[yesterdayStr] && today !== dates[dates.length - 1]) {
+    currentStreak = 0;
+  }
+  return { currentStreak, maxStreak };
+}
+
+async function generateActivitySVG(username, langue, showStreak) {
   const data = await fetchData(username);
   if (!data) return null;
 
   const processed = processActivityData(data);
-  return generateSVG(processed, langue);
+  return generateSVG(processed, langue, showStreak);
 }
 
 module.exports = {
