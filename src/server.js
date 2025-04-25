@@ -10,7 +10,8 @@ app.use(express.static(path.join(__dirname, "pages")));
 
 app.get("/:username/:langue/activity.svg", async (req, res) => {
   const { username, langue } = req.params;
-  const svg = await generateActivitySVG(username, langue);
+  const showStreak = req.query.streak !== "false"
+  const svg = await generateActivitySVG(username, langue, showStreak);
 
   if (!svg) {
     res.setHeader("Content-Type", "text/plain");

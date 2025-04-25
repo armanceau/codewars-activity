@@ -78,11 +78,17 @@ select,
 button {
   display: block;
   width: 100%;
-  padding: 0.75rem;
   margin-top: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #555;
-  font-size: 1rem;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border 0.3s, background-color 0.3s, color 0.3s;
+}
+
+input:hover,select:hover{
+  border: 1px solid #8f8f8f;
+  cursor: pointer;
 }
 
 body.light input,
@@ -158,4 +164,18 @@ pre {
 
 .social-links a:hover {
   text-decoration: underline;
+}
+
+#streakSelect {
+  width: fit-content;
+}
+
+hr{
+  margin: 15px 0px 15px 0px;
+  border: 0; 
+  height: 1px; 
+  background-image: -webkit-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+  background-image: -moz-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+  background-image: -ms-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0);
+  background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0); 
 }

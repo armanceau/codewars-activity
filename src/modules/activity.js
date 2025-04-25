@@ -36,13 +36,15 @@ async function fetchData(username) {
   }
 }
 
-function generateSVG(activityData, langue = "fr") {
+function generateSVG(activityData, langue = "fr", showStreak = true) {
   const translations = {
     fr: {
       tooltip: (count, date) =>
         `${count} kata${count > 1 ? "s" : ""} réalisé${
           count > 1 ? "s" : ""
         } le ${date}`,
+      streak: (count) =>
+        `${count} jour${count > 1 ? "s" : ""} de suite`,
       low: "Faible",
       high: "Élevé",
       locale: "fr-FR",
@@ -50,6 +52,8 @@ function generateSVG(activityData, langue = "fr") {
     en: {
       tooltip: (count, date) =>
         `${count} kata${count > 1 ? "s" : ""} completed on ${date}`,
+      streak: (count) =>
+        `${count} day${count > 1 ? "s" : ""} in a row`,
       low: "Low",
       high: "High",
       locale: "en-US",
@@ -59,6 +63,8 @@ function generateSVG(activityData, langue = "fr") {
         `${count} kata${count > 1 ? "s" : ""} completado${
           count > 1 ? "s" : ""
         } el ${date}`,
+      streak: (count) =>
+        `${count} día${count > 1 ? "s" : ""} seguido${count > 1 ? "s" : ""}`,
       low: "Bajo",
       high: "Alto",
       locale: "es-ES",
@@ -132,21 +138,25 @@ function generateSVG(activityData, langue = "fr") {
     legendOffset + dayHeight / 1.1
   }" fill="#ba1f00" font-family="Inter, sans-serif" font-size="14" text-anchor="start">${
     t.high
-  }</text>
-  <g transform="translate(580, 115)">
-    <rect width="170" height="40" fill="#151b23" stroke="#ba9b95" rx="8" ry="8"/>
-    <text x="85" y="25" fill="#ba9b95" font-family="Inter, sans-serif" font-size="16" text-anchor="middle">
-      🔥 ${currentStreak} jour${currentStreak > 1 ? "s" : ""} de suite
-    </text>
-  </g></svg>`;
+  }</text>`;
 
-
+  if (showStreak) {
+    svgContent +=`
+    <g transform="translate(720, 115)" style="cursor: default;">
+        <rect width="45" height="30" fill="#151b23" stroke="#ba9b95" rx="8" ry="8"/>
+        <text x="20" y="20" fill="#ba9b95" font-family="Inter, sans-serif" font-size="14" text-anchor="middle">
+          🔥${currentStreak}
+          <title>${t.streak(currentStreak)}</title>
+        </text>
+      </g>`;
+  }
+    svgContent +=`</svg>`;
 
   return svgContent;
 }
 
 function calculateStreaks(activityDays) {
-  const dates = Object.keys(activityDays).sort(); // format YYYY-MM-DD
+  const dates = Object.keys(activityDays).sort();
   let maxStreak = 0;
   let currentStreak = 0;
   let lastDate = null;
@@ -178,12 +188,12 @@ function calculateStreaks(activityDays) {
   return { currentStreak, maxStreak };
 }
 
-async function generateActivitySVG(username, langue) {
+async function generateActivitySVG(username, langue, showStreak) {
   const data = await fetchData(username);
   if (!data) return null;
 
   const processed = processActivityData(data);
-  return generateSVG(processed, langue);
+  return generateSVG(processed, langue, showStreak);
 }
 
 module.exports = {
