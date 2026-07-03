@@ -1,7 +1,20 @@
 {
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "node src/server.js"
+  },
   "dependencies": {
+    "@astryxdesign/core": "^0.1.2",
+    "@astryxdesign/theme-neutral": "^0.1.2",
     "axios": "^1.8.4",
     "express": "^4.21.2",
-    "puppeteer": "^24.4.0"
+    "puppeteer": "^24.4.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.3",
+    "vite": "^8.1.1"
   }
 }
