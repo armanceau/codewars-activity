@@ -27,7 +27,7 @@ Here is a real example of the SVG chart generated for a Codewars user:
 Embed it anywhere you want using:
 
 ```html
-<iframe src="https://codewars-activity.vercel.app/armanceau/en/activity.svg" width="720" height="120" frameborder="0"></iframe>
+<iframe src="https://codewars-activity.vercel.app/armanceau/en/activity.svg" width="820" height="180" frameborder="0"></iframe>
 ```
 Or in Markdown:
 ```markdown
@@ -46,7 +46,7 @@ To hide the badge, use this Markdown (badge displayed by default):
 
 
 ```html
-<iframe src="https://codewars-activity.vercel.app/armanceau/en/activity.svg?streak=false" width="720" height="120" frameborder="0"></iframe>
+<iframe src="https://codewars-activity.vercel.app/armanceau/en/activity.svg?streak=false" width="820" height="180" frameborder="0"></iframe>
 ```
 Or in Markdown:
 ```markdown
