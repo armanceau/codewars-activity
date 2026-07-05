@@ -25,14 +25,26 @@ function processActivityData(data) {
 }
 
 async function fetchData(username) {
+  const url = `https://www.codewars.com/api/v1/users/${username}/code-challenges/completed`;
+  const cutoff = new Date(Date.now() - 366 * 86400000);
+
   try {
-    const response = await axios.get(
-      `https://www.codewars.com/api/v1/users/${username}/code-challenges/completed`,
-      {
-        params: { page: 0 },
-      }
-    );
-    return response.data;
+    let page = 0;
+    let totalPages = 1;
+    let items = [];
+
+    while (page < totalPages) {
+      const response = await axios.get(url, { params: { page } });
+      const { data, totalPages: pages } = response.data;
+      totalPages = pages;
+      items = items.concat(data);
+
+      const oldestOnPage = data[data.length - 1];
+      if (!oldestOnPage || new Date(oldestOnPage.completedAt) < cutoff) break;
+      page++;
+    }
+
+    return { data: items };
   } catch (err) {
     console.error("Erreur API:", err);
     return null;
