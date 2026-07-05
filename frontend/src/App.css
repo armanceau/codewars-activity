@@ -147,6 +147,14 @@ main {
   transition: opacity 0.2s ease;
 }
 
+.card-container {
+  min-height: 200px;
+}
+
+.card-preview {
+  height: 200px;
+}
+
 /* ── Field row ── */
 
 .field-row {

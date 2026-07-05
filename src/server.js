@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const { generateActivitySVG } = require("./modules/activity");
+const { generateStatsCardSVG } = require("./modules/statsCard");
 
 const app = express();
 const port = 3000;
@@ -12,6 +13,19 @@ app.get("/:username/:langue/activity.svg", async (req, res) => {
   const { username, langue } = req.params;
   const showStreak = req.query.streak !== "false"
   const svg = await generateActivitySVG(username, langue, showStreak);
+
+  if (!svg) {
+    res.setHeader("Content-Type", "text/plain");
+    return res.send("No data was found for this user.");
+  }
+
+  res.setHeader("Content-Type", "image/svg+xml");
+  res.send(svg);
+});
+
+app.get("/:username/:langue/card.svg", async (req, res) => {
+  const { username, langue } = req.params;
+  const svg = await generateStatsCardSVG(username, langue);
 
   if (!svg) {
     res.setHeader("Content-Type", "text/plain");

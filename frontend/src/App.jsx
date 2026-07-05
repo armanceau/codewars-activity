@@ -35,6 +35,10 @@ function App() {
   const [svgUrl, setSvgUrl] = useState('')
   const [copiedMarkdown, setCopiedMarkdown] = useState(false)
   const [copiedLink, setCopiedLink] = useState(false)
+  const [cardLoading, setCardLoading] = useState(false)
+  const [cardUrl, setCardUrl] = useState('')
+  const [copiedCardMarkdown, setCopiedCardMarkdown] = useState(false)
+  const [copiedCardLink, setCopiedCardLink] = useState(false)
   const [mode, setMode] = useState(() => {
     try { return localStorage.getItem('theme') || 'system' } catch { return 'system' }
   })
@@ -52,6 +56,14 @@ function App() {
   }
 
   const markdown = svgUrl ? `![Codewars Activity](${svgUrl})` : ''
+
+  const generateCard = () => {
+    if (!username.trim()) return
+    setCardUrl(`${BASE_URL}/${username.trim()}/${lang}/card.svg`)
+    setCardLoading(true)
+  }
+
+  const cardMarkdown = cardUrl ? `![Codewars Stats Card](${cardUrl})` : ''
 
   const copy = async (text, setter) => {
     await navigator.clipboard.writeText(text)
@@ -187,6 +199,75 @@ function App() {
                       />
                     </div>
                     <pre className="code-pre"><code>{markdown}</code></pre>
+                  </VStack>
+                </VStack>
+              </Card>
+            )}
+
+            <Card>
+              <VStack gap={3} style={{ padding: '1.5rem' }}>
+                <Heading level={2}>Stats card</Heading>
+                <Text type="supporting" as="p">
+                  A compact card with your rank, honor, katas completed, current streak and main language — great for a README profile section.
+                </Text>
+                <Button
+                  label="Generate card"
+                  variant="primary"
+                  onClick={generateCard}
+                  isDisabled={!username.trim()}
+                  style={{ width: '100%' }}
+                />
+              </VStack>
+            </Card>
+
+            {cardUrl && (
+              <Card>
+                <VStack gap={4} style={{ padding: '1.5rem' }}>
+                  <div className="result-title">
+                    <Heading level={2}>Card preview</Heading>
+                    {!cardLoading && <Badge label="Ready" variant="success" />}
+                  </div>
+
+                  <div className="svg-container card-container">
+                    {cardLoading && (
+                      <div className="svg-loader">
+                        <Spinner />
+                      </div>
+                    )}
+                    <iframe
+                      className="svg-preview card-preview"
+                      src={cardUrl}
+                      onLoad={() => setCardLoading(false)}
+                      style={{ opacity: cardLoading ? 0 : 1 }}
+                    />
+                  </div>
+
+                  <Divider />
+
+                  <VStack gap={2}>
+                    <div className="field-row">
+                      <Text type="label">Direct link</Text>
+                      <Button
+                        label={copiedCardLink ? 'Copied' : 'Copy link'}
+                        variant={copiedCardLink ? 'ghost' : 'secondary'}
+                        size="sm"
+                        onClick={() => copy(cardUrl, setCopiedCardLink)}
+                      />
+                    </div>
+                    <pre className="code-pre"><code>{cardUrl}</code></pre>
+                  </VStack>
+
+                  <VStack gap={2}>
+                    <div className="field-row">
+                      <Text type="label">Markdown embed</Text>
+                      <Button
+                        label={copiedCardMarkdown ? 'Copied' : 'Copy markdown'}
+                        variant={copiedCardMarkdown ? 'ghost' : 'secondary'}
+                        size="sm"
+                        onClick={() => copy(cardMarkdown, setCopiedCardMarkdown)}
+                      />
+                    </div>
+                    <pre className="code-pre"><code>{cardMarkdown}</code></pre>
                   </VStack>
                 </VStack>
               </Card>

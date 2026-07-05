@@ -251,4 +251,7 @@ async function generateActivitySVG(username, langue, showStreak) {
 
 module.exports = {
   generateActivitySVG,
+  fetchData,
+  processActivityData,
+  calculateStreaks,
 };
