@@ -1,7 +1,10 @@
 const express = require("express");
 const path = require("path");
 const { generateActivitySVG } = require("./modules/activity");
-const { generateStatsCardSVG } = require("./modules/statsCard");
+const {
+  generateStatsCardSVG,
+  generateDemoCardsHtml,
+} = require("./modules/statsCard");
 
 const app = express();
 const port = 3000;
@@ -34,6 +37,10 @@ app.get("/:username/:langue/card.svg", async (req, res) => {
 
   res.setHeader("Content-Type", "image/svg+xml");
   res.send(svg);
+});
+
+app.get("/demo/cards", (req, res) => {
+  res.send(generateDemoCardsHtml());
 });
 
 app.get("/", (req, res) => {
